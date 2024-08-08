@@ -31,9 +31,9 @@ public class AuthController {
         return authService.login(loginRequest);
     }
 
-    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDto> register(@Validated(OnCreate.class)
-                                            @ModelAttribute UserDto userDto) {
+                                            @RequestBody UserDto userDto) {
         User user = userMapper.toEntity(userDto);
         return new ResponseEntity<>(userMapper.toDto(userService.create(user)), HttpStatus.CREATED);
     }

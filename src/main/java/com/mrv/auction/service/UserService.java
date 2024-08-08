@@ -1,7 +1,6 @@
 package com.mrv.auction.service;
 
 import com.mrv.auction.model.User;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 

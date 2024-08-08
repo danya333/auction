@@ -45,7 +45,7 @@ services:
 
   minio:
     image: minio/minio:latest
-    container_name: minio
+    container_name: minio_auction
     networks:
       - app-network
     environment:
