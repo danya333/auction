@@ -26,7 +26,7 @@ public class AdController {
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Ad> createAd(@Validated(OnCreate.class)
                                        @ModelAttribute AdDto adDto,
-                                       @RequestParam("images") List<MultipartFile> images) {
+                                       @RequestParam(value = "images", required = false) List<MultipartFile> images) {
         Ad ad = adMapper.toEntity(adDto);
         return new ResponseEntity<>(adService.create(ad, images), HttpStatus.CREATED);
     }
@@ -34,8 +34,14 @@ public class AdController {
     @GetMapping("/list")
     public ResponseEntity<List<Ad>> getAllAds() {
         List<Ad> ads = adService.getAllAds();
-        List<AdDto> adDtos = adMapper.toDto(ads);
         return new ResponseEntity<>(ads, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/raise")
+    public ResponseEntity<String> raisePrice(@PathVariable("id") Long id,
+                                             @RequestParam Integer price) {
+        Ad ad = adService.getAd(id);
+        return new ResponseEntity<>(adService.raiseThePrice(ad, price), HttpStatus.OK);
     }
 
 }

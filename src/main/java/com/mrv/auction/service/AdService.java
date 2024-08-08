@@ -7,6 +7,10 @@ import java.util.List;
 
 public interface AdService {
 
+    String raiseThePrice(Ad ad, Integer price);
+
+    void changeStatus(Ad ad);
+
     Ad getAd(Long id);
 
     List<Ad> getAllAds();

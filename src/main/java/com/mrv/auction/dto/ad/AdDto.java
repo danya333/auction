@@ -42,6 +42,5 @@ public class AdDto {
     private Status status;
     @NotNull(message = "Timer must not be null.", groups = {OnUpdate.class, OnCreate.class})
     private Integer timer;
-    private List<Image> images;
     private User user;
 }
