@@ -12,6 +12,7 @@ public interface ImageService {
 
     String upload(MultipartFile image);
 
-    List<byte[]> download(List<String> image);
+    List<byte[]> download(Long id);
 
+    List<String> getImages(Long id);
 }

@@ -34,10 +34,6 @@ public class Ad {
     @JsonManagedReference
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "ad", fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<UserAd> userAds = new ArrayList<>();
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference

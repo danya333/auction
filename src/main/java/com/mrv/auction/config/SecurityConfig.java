@@ -2,8 +2,6 @@ package com.mrv.auction.config;
 
 import com.mrv.auction.security.JwtTokenFilter;
 import com.mrv.auction.security.JwtTokenProvider;
-import com.mrv.auction.service.props.MinioProperties;
-import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
@@ -17,8 +15,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -28,10 +24,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor(onConstructor = @__(@Lazy))
-public class ApplicationConfig {
+public class SecurityConfig {
 
     private final JwtTokenProvider tokenProvider;
-    private final MinioProperties minioProperties;
 
     @Bean
     @SneakyThrows
@@ -69,12 +64,6 @@ public class ApplicationConfig {
     }
 
 
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Bean
     @SneakyThrows
     public AuthenticationManager authenticationManager(
@@ -82,14 +71,4 @@ public class ApplicationConfig {
     ) {
         return configuration.getAuthenticationManager();
     }
-
-    @Bean
-    public MinioClient minioClient() {
-        return MinioClient.builder()
-                .endpoint(minioProperties.getUrl())
-                .credentials(minioProperties.getAccessKey(),
-                        minioProperties.getSecretKey())
-                .build();
-    }
-
 }

@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -62,13 +63,14 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<byte[]> download(List<String> images){
+    public List<byte[]> download(Long id){
+        List<String> images = this.getImages(id);
         List<byte[]> fileContents = new ArrayList<>();
         for (String imageName : images) {
             try {
                 InputStream stream = minioClient.getObject(
                         GetObjectArgs.builder()
-                                .bucket("images")
+                                .bucket("auction")
                                 .object(imageName)
                                 .build());
 
@@ -80,6 +82,13 @@ public class ImageServiceImpl implements ImageService {
             }
         }
         return fileContents;
+    }
+
+    @Override
+    public List<String> getImages(Long id) {
+        List<Image> images = imageRepository.findAllByAdId(id)
+                .orElseThrow(() -> new NoSuchElementException("Images not found"));
+        return images.stream().map(Image::getName).toList();
     }
 
 

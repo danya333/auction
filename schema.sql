@@ -34,14 +34,3 @@ create table if not exists images
     primary key (id),
     foreign key (ad_id) references ads (id)
 );
-
-create table if not exists users_ads
-(
-    id        serial8,
-    user_id   int8 not null,
-    ad_id     int8 not null,
-    min_price int4 not null,
-    primary key (id),
-    foreign key (user_id) references users (id),
-    foreign key (ad_id) references ads (id)
-);

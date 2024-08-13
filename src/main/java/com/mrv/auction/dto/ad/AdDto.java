@@ -13,14 +13,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.Date;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdDto {
-    private Long id;
 
     @NotNull(message = "Name must not be null.", groups = {OnUpdate.class, OnCreate.class})
     @Length(
@@ -38,9 +35,6 @@ public class AdDto {
     private String description;
     @NotNull(message = "Price must not be null.", groups = {OnUpdate.class, OnCreate.class})
     private Integer startPrice;
-    private Date creationDate;
-    private Status status;
     @NotNull(message = "Timer must not be null.", groups = {OnUpdate.class, OnCreate.class})
     private Integer timer;
-    private User user;
 }
