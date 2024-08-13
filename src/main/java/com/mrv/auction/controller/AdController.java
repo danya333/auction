@@ -37,11 +37,11 @@ public class AdController {
         return new ResponseEntity<>(ads, HttpStatus.OK);
     }
 
+
     @PostMapping("/{id}/raise")
     public ResponseEntity<String> raisePrice(@PathVariable("id") Long id,
                                              @RequestParam Integer price) {
         Ad ad = adService.getAd(id);
         return new ResponseEntity<>(adService.raiseThePrice(ad, price), HttpStatus.OK);
     }
-
 }

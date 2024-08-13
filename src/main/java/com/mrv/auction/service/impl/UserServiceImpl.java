@@ -7,15 +7,16 @@ import com.mrv.auction.model.User;
 import com.mrv.auction.repository.UserRepository;
 import com.mrv.auction.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -51,6 +52,7 @@ public class UserServiceImpl implements UserService {
         existingUser.setUsername(user.getUsername());
         existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(existingUser);
+        log.info("User with id {} was updated", userId);
         return existingUser;
     }
 
@@ -68,6 +70,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
         userRepository.save(user);
+        log.info("Created user with id {}", user.getId());
         return user;
     }
 
@@ -78,6 +81,7 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("User with ID " + id + " not found.");
         }
         userRepository.deleteById(id);
+        log.info("Deleted user with id {}", id);
     }
 
 }

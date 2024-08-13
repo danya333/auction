@@ -10,6 +10,7 @@ public interface AdService {
     String raiseThePrice(Ad ad, Integer price);
 
     void changeStatus(Ad ad);
+    void changePrice(Ad ad, int minPrice);
 
     Ad getAd(Long id);
 

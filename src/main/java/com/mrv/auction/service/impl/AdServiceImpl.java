@@ -1,6 +1,6 @@
 package com.mrv.auction.service.impl;
 
-import com.mrv.auction.dto.Bet;
+import com.mrv.auction.service.Bet;
 import com.mrv.auction.model.Ad;
 import com.mrv.auction.model.Status;
 import com.mrv.auction.model.User;
@@ -8,6 +8,7 @@ import com.mrv.auction.repository.AdRepository;
 import com.mrv.auction.service.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AdServiceImpl implements AdService {
 
@@ -31,15 +33,17 @@ public class AdServiceImpl implements AdService {
     @Override
     public String raiseThePrice(Ad ad, Integer price) {
         if(!adsInUse.containsKey(ad.getId())) {
-            Bet bet = new Bet(price, ad, this);
+            Bet bet = new Bet(price, ad, this, adsInUse, userService.getCurrentUser());
             Thread t1 = new Thread(bet);
             t1.start();
+            log.info("Auction for ad with id: {} is started with the price {}", ad.getId(), price);
             adsInUse.put(ad.getId(), bet);
             userAdService.createUserAd(userService.getCurrentUser(), ad, price);
             return "The price has been raised to " + price;
         } else{
-            boolean raiseResult = adsInUse.get(ad.getId()).raisePrice(price);
+            boolean raiseResult = adsInUse.get(ad.getId()).raisePrice(price, userService.getCurrentUser());
             if(raiseResult) {
+                this.changePrice(ad, price);
                 userAdService.createUserAd(userService.getCurrentUser(), ad, price);
                 return "The price of ad " + ad.getName() + " is raised to " + price;
             } else {
@@ -52,6 +56,12 @@ public class AdServiceImpl implements AdService {
     @Override
     public void changeStatus(Ad ad) {
         ad.setStatus(Status.FINISHED);
+        adRepository.save(ad);
+    }
+
+    @Override
+    public void changePrice(Ad ad, int minPrice) {
+        ad.setMinPrice(minPrice);
         adRepository.save(ad);
     }
 
@@ -78,11 +88,14 @@ public class AdServiceImpl implements AdService {
         ad.setCreationDate(LocalDateTime.now());
         ad.setStatus(Status.ACTIVE);
         ad.setUser(userService.getCurrentUser());
+        ad.setMinPrice(ad.getStartPrice());
         ad = adRepository.save(ad);
         for (MultipartFile image : images) {
             ad.getImages().add(imageService.create(ad, image));
         }
-        return adRepository.save(ad);
+        adRepository.save(ad);
+        log.info("Created ad with id: {}", ad.getId());
+        return ad;
     }
 
     @Override
@@ -94,6 +107,7 @@ public class AdServiceImpl implements AdService {
         existingAd.setStartPrice(ad.getStartPrice());
         existingAd.setTimer(ad.getTimer());
         adRepository.save(existingAd);
+        log.info("Updated ad with id: {}", ad.getId());
         return existingAd;
     }
 
@@ -102,6 +116,7 @@ public class AdServiceImpl implements AdService {
     public void delete(Long id) {
         if(this.getAd(id) != null) {
             adRepository.deleteById(id);
+            log.info("Deleted ad with id: {}", id);
         } else {
             throw new NoSuchElementException("No ad found with id: " + id);
         }

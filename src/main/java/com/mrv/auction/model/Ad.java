@@ -24,6 +24,7 @@ public class Ad {
     private String name;
     private String description;
     private Integer startPrice;
+    private Integer minPrice;
     private LocalDateTime creationDate;
     @Enumerated(EnumType.STRING)
     private Status status;
