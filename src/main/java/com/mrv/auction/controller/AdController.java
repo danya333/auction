@@ -46,7 +46,7 @@ public class AdController {
 
 
     @Operation(summary = "Получить список доступных объявлений",
-            description = "Данный метод позволяет отображать объявления со статусом ACTIVE")
+            description = "Данный метод позволяет отображать объявления со статусом ACTIVE с применением сортировки")
     @GetMapping("/list")
     public ResponseEntity<Page<Ad>> getAllAds(@Parameter(description = "Номер страницы сортировки")
                                               @RequestParam(name = "page", defaultValue = "0") int page,

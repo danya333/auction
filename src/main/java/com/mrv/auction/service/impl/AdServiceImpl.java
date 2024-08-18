@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +28,8 @@ public class AdServiceImpl implements AdService {
     private final UserService userService;
     private final ImageService imageService;
 
-    // Словарь, содержащий в качестве ключа id объявления и объект Bet (объявление по которому начались торги)
+    // Словарь, содержащий в качестве ключа id объявления и в качестве значения - объект Bet (объявление по которому
+    // начались торги)
     private final Map<Long, Bet> adsInUse = new HashMap<>();
 
     // Метод для поднятия ставки (минимальной цены) на объявление
@@ -89,7 +89,8 @@ public class AdServiceImpl implements AdService {
 
     @Override
     public Page<Ad> getAllAds(PageRequest pageRequest) {
-        return adRepository.findAllByStatus(Status.ACTIVE, pageRequest).orElseThrow(()-> new NoSuchElementException("No ads found"));
+        return adRepository.findAllByStatus(Status.ACTIVE, pageRequest)
+                .orElseThrow(()-> new NoSuchElementException("No ads found"));
     }
 
 
