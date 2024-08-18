@@ -1,4 +1,4 @@
-
+create schema if not exists auction;
 create table if not exists users
 (
     id       serial8,

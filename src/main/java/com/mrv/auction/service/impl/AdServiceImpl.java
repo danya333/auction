@@ -102,8 +102,10 @@ public class AdServiceImpl implements AdService {
         ad.setUser(userService.getCurrentUser());
         ad.setMinPrice(ad.getStartPrice());
         ad = adRepository.save(ad);
-        for (MultipartFile image : images) {
-            ad.getImages().add(imageService.create(ad, image));
+        if(images != null){
+            for (MultipartFile image : images) {
+                ad.getImages().add(imageService.create(ad, image));
+            }
         }
         adRepository.save(ad);
         log.info("Created ad with id: {}", ad.getId());
